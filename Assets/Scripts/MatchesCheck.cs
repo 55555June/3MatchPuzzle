@@ -290,21 +290,23 @@ public class MatchesCheck : MonoBehaviour
         {
             if(board.currentTile.isMatched)
             {
+                if (!isItemCheck()) { return; }                         //아이템 효과를 가지고있다면 리턴
+
                 board.currentTile.isMatched = false;
 
                 int randValue = Random.Range(0, 100);
                 Debug.Log(randValue);
                 if (randValue <34)
                 {
-                    board.currentTile.CreateItem(Item.RowArrow);
+                    board.currentTile.ActiveItem(Item.RowArrow);
                 }
                 else if (randValue >= 34 && randValue < 67)
                 {
-                    board.currentTile.CreateItem(Item.ColumnArrow);
+                    board.currentTile.ActiveItem(Item.ColumnArrow);
                 }
                 else
                 {
-                    board.currentTile.CreateItem(Item.Bomb);
+                    board.currentTile.ActiveItem(Item.Bomb);
                 }
             }
             else if( board.currentTile.otherTile != null)
@@ -319,19 +321,30 @@ public class MatchesCheck : MonoBehaviour
                     Debug.Log(randValue);
                     if (randValue < 34)
                     {
-                        otherTile.CreateItem(Item.RowArrow);
+                        otherTile.ActiveItem(Item.RowArrow);
                     }
                     else if (randValue >= 34 && randValue < 67)
                     {
-                        otherTile.CreateItem(Item.ColumnArrow);
+                        otherTile.ActiveItem(Item.ColumnArrow);
                     }
                     else
                     {
-                        otherTile.CreateItem(Item.Bomb);
+                        otherTile.ActiveItem(Item.Bomb);
                     }
                 }
             }
         }
     }
 
+    bool isItemCheck()
+    {
+        if(board.currentTile.isColumnArrowBomb || board.currentTile.isRowArrowBomb || board.currentTile.isBomb)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
 }
