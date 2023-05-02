@@ -119,8 +119,7 @@ public class BackBoard : MonoBehaviour
                         {
                             matchesCheck.CreateRandomItem();
                         }
-
-                        ObjectPooling.Instance().ReturnObject(totalTiles[i, j].GetComponent<Tile>().tileNumber, totalTiles[i, j].gameObject);
+                        totalTiles[i, j].GetComponent<Tile>().DestroyTile();
                         totalTiles[i, j] = null;
                     }
                 }
@@ -132,6 +131,8 @@ public class BackBoard : MonoBehaviour
     
     private IEnumerator TileDown_Coroutine()                                                         //전체타일중 비어있는 타일있는지 검사 하고 빈 타일 만큼 내려주는 코루틴
     {
+        float time = 0.1f;
+        float value = 0;
         int nullCount = 0;
         for(int i=0; i< boardWidth; i++)
         {
@@ -146,10 +147,11 @@ public class BackBoard : MonoBehaviour
                     totalTiles[i, j].GetComponent<Tile>().row -= nullCount;
                     totalTiles[i, j] = null;
                 }
+                value = 0;
             }
             nullCount = 0;
         }
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
         StartCoroutine(FillBoard_Coroutine());
     }
 
