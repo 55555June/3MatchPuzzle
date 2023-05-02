@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Tile : MonoBehaviour
 {
@@ -50,6 +51,9 @@ public class Tile : MonoBehaviour
         isColumnArrowBomb = false;
         isRowArrowBomb = false;
         isMatched = false;
+        DeActiveItems();
+        this.transform.localScale = new Vector3(1, 1, 1);
+        this.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
     }
 
     private void Update()
@@ -187,30 +191,77 @@ public class Tile : MonoBehaviour
         StartCoroutine(CheckMoveCoroutine());
     }
 
-    public void CreateItem(Item _item)
+    public void ActiveItem(Item _item)
     {
         GameObject item;
         switch (_item)
         {
             case Item.RowArrow:
                 isRowArrowBomb = true;
-                item = Instantiate(rowArrow, transform.position, Quaternion.identity);
+                this.transform.GetChild(0).transform.gameObject.SetActive(true);
+                item = this.transform.GetChild(0).gameObject;
+                item.transform.localScale = new Vector3(1, 1, 1);
                 item.transform.parent = this.transform;
                 break;
 
             case Item.ColumnArrow:
                 isColumnArrowBomb = true;
-                item = Instantiate(columnArrow, transform.position, Quaternion.identity);
+                this.transform.GetChild(1).transform.gameObject.SetActive(true);
+                item = this.transform.GetChild(1).gameObject;
+                item.transform.localScale = new Vector3(1, 1, 1);
                 item.transform.parent = this.transform;
                 break;
 
             case Item.Bomb:
                 isBomb = true;
-                item = Instantiate(bomb, transform.position, Quaternion.identity);
+                this.transform.GetChild(2).transform.gameObject.SetActive(true);
+                item = this.transform.GetChild(2).gameObject;
+                item.transform.localScale = new Vector3(1, 1, 1);
                 item.transform.parent = this.transform;
                 break;
         }
+    }
 
-      
+    void DeActiveItems()
+    {
+        for(int i=0; i< this.transform.childCount; i++)
+        {
+            this.transform.GetChild(i).transform.gameObject.SetActive(false);
+        }
+    }
+
+    public void DestroyTile(UnityAction _callback =null)
+    {
+        StartCoroutine(DestroyEffect_Coroutine(_callback));
+    }
+
+    IEnumerator DestroyEffect_Coroutine(UnityAction _callback)
+    {
+        float time = 0.4f;
+        float value = 0;
+
+        Vector2 curScale = this.GetComponent<Transform>().localScale;
+        SpriteRenderer spriteRenderer = this.GetComponent<SpriteRenderer>();
+        Color curColor = spriteRenderer.color;
+
+        while(value < time)
+        {
+            value += Time.deltaTime;
+            transform.localScale = Vector2.Lerp(curScale, new Vector2(1.5f, 1.5f),value/time);
+            spriteRenderer.color = Color.Lerp(curColor, new Color(1, 1, 1, 0), value / time);
+
+            yield return null;
+        }
+
+        ObjectPooling.Instance().ReturnObject(this.tileNumber, this.gameObject);
+
+        if (_callback != null)
+        {
+            _callback();
+        }
+
+
+        yield return null;
+
     }
 }
