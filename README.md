@@ -1,7 +1,11 @@
 # 3MatchPuzzle
-2D 3Match Puzzle 게임 1개 스테이지를 구현했습니다.
+### 2D 3Match Puzzle 게임 1개 스테이지를 구현했습니다.
 
-# 게임플레이
+## 게임플레이
+
+
+https://github.com/55555June/3MatchPuzzle/assets/131721836/481c798e-af62-4f85-8c1d-2820eaa3fab8
+
 
 ## 게임아이템 사용-가로열 폭탄(RowBomb)
 
